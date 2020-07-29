@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <title>单例模式+简单工厂模式+模板方法模式在实际场景中的应用 | RockeyCui的博客</title>
+  <meta name="keywords" content=" JAVA , spring ">
+  <meta name="description" content="单例模式+简单工厂模式+模板方法模式在实际场景中的应用 | RockeyCui的博客">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="“我们先把产品做出来，后续再改进”，这根本做不到！">
+<meta name="keywords" content="rockeycui cuishilei 崔石磊">
+<meta property="og:type" content="website">
+<meta property="og:title" content="关于我">
+<meta property="og:url" content="https://cuishilei.com/about/index.html">
+<meta property="og:site_name" content="RockeyCui的博客">
+<meta property="og:description" content="“我们先把产品做出来，后续再改进”，这根本做不到！">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-01T12:00:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于我">
+<meta name="twitter:description" content="“我们先把产品做出来，后续再改进”，这根本做不到！">
+
+
+<link rel="icon" href="/img/favicon-32.ico">
+
+<link href="/css/style.css?v=1.0.1" rel="stylesheet">
+
+<link href="/css/hl_theme/darcula.css?v=1.0.1" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="/js/jquery.autocomplete.min.js?v=1.0.1"></script>
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+<script src="/js/iconfont.js?v=1.0.1"></script>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2f5c46996ac0903b8efdb622749f822c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="false">
+  <input class="theme_blog_path" value>
+</div>
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/me.png" />
+</a>
+<div class="author">
+    <span>崔石磊(RockeyCui)</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="github" href="https://github.com/RockeyCui" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="email" href="mailto:rockeycui@163.com" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-email"></use>
+                </svg>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active">全部文章<small>(32)</small></div></li>
+    
+        
+            
+            <li><div data-rel="JAVA"><i class="fold iconfont icon-right"></i>JAVA<small>(22)</small></div>
+                
+                    <ul class="sub hide">
+                        
+                        <li><div data-rel="web后端">web后端<small>(11)</small></div>
+                            
+                        </li>
+                            
+                        <li><div data-rel="cache">cache<small>(1)</small></div>
+                            
+                        </li>
+                            
+                        <li><div data-rel="flink">flink<small>(1)</small></div>
+                            
+                        </li>
+                            
+                        <li><div data-rel="算法">算法<small>(6)</small></div>
+                            
+                        </li>
+                            
+                    </ul>
+                
+            </li>
+            
+        
+    
+        
+            
+        
+    
+        
+            
+        
+    
+        
+            
+        
+    
+        
+            
+            <li><div data-rel="linux">linux<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Redis">Redis<small>(6)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="生活">生活<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="趣味">趣味<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    </div>
+    <div><a class="about  hasFriend  site_url"  href="/about">关于</a><a style="width: 50%"  class="friends">友链</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="32">
+<input type="hidden" id="yelog_site_word_count" value="27.9k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        友情链接
+        <i class="back-title-list"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="https://blog.boolchow.com/">BoolChow</a></li>
+            
+            <li><a target="_blank" href="https://sunzhiqiang.com.cn/">勤奋的猪</a></li>
+            
+            <li><a target="_blank" href="https://blog.csdn.net/u013110743">LFW</a></li>
+            
+            <li><a target="_blank" href="https://my.oschina.net/u/2000675">张欢1993</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <form onkeydown="if(event.keyCode==13){return false;}">
+        <input class="search" type="text" placeholder="Search..." autocomplete="off"id="local-search-input" >
+        <i class="cross"></i>
+        <span>
+            <label for="tagswitch">Tags:</label>
+            <input id="tagswitch" type="checkbox" style="display: none" />
+            <i id="tagsWitchIcon"></i>
+        </span>
+    </form>
+    <div class="tags-list">
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">JAVA</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color1">cache</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color2">spring</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color1">flink</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">DB</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color1">linux</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color1">Redis</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">生活</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">趣味</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">算法</a>
+    </li>
+    
+    <div class="clearfix"></div>
+</div>
+
+    
+    <nav id="title-list-nav">
+        
+        <a  class="JAVA "
+           href="/jpa-query-union.html"
+           data-tag="JAVA,spring"
+           data-author="" >
+            <span class="post-title" title="Jpa @Query (JPQL) 复杂查询（联表，动态条件，分页）">Jpa @Query (JPQL) 复杂查询（联表，动态条件，分页）</span>
+            <span class="post-date" title="2020-05-29 16:21:33">2020/05/29</span>
+        </a>
+        
+        <a  class="Redis "
+           href="/redis-set.html"
+           data-tag="Redis"
+           data-author="" >
+            <span class="post-title" title="Redis系列-Redis-Set命令讲解（JAVA-lettuce客户端）">Redis系列-Redis-Set命令讲解（JAVA-lettuce客户端）</span>
+            <span class="post-date" title="2019-11-05 19:24:47">2019/11/05</span>
+        </a>
+        
+        <a  class="JAVA "
+           href="/utc-str-to-timestamp.html"
+           data-tag="JAVA"
+           data-author="" >
+            <span class="post-title" title="UTC-string to java.sql.Timestamp">UTC-string to java.sql.Timestamp</span>
+            <span class="post-date" title="2019-10-12 20:21:33">2019/10/12</span>
+        </a>
+        
+        <a  class="JAVA flink "
+           href="/flink1.9-维表 join 自定义实现.html"
+           data-tag="flink"
+           data-author="" >
+            <span class="post-title" title="flink1.9 维表 join 自定义实现 LookupableTableSource">flink1.9 维表 join 自定义实现 LookupableTableSource</span>
+            <span class="post-date" title="2019-09-01 09:25:00">2019/09/01</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/ZK-分布式阻塞锁设计思路.html"
+           data-tag="JAVA"
+           data-author="" >
+            <span class="post-title" title="ZK 分布式阻塞锁设计思路">ZK 分布式阻塞锁设计思路</span>
+            <span class="post-date" title="2019-08-05 20:45:18">2019/08/05</span>
+        </a>
+        
+        <a  class="JAVA cache "
+           href="/Caffeine cache 实例代码demo.html"
+           data-tag="JAVA,cache"
+           data-author="" >
+            <span class="post-title" title="Caffeine cache 实例代码demo">Caffeine cache 实例代码demo</span>
+            <span class="post-date" title="2019-07-23 18:32:36">2019/07/23</span>
+        </a>
+        
+        <a  class="Redis "
+           href="/redis-lock.html"
+           data-tag="Redis"
+           data-author="" >
+            <span class="post-title" title="Redis系列-Redis-分布式锁（JAVA-lettuce客户端）">Redis系列-Redis-分布式锁（JAVA-lettuce客户端）</span>
+            <span class="post-date" title="2019-04-10 20:00:00">2019/04/10</span>
+        </a>
+        
+        <a  class="Redis "
+           href="/redis-bitmaps-应用.html"
+           data-tag="Redis"
+           data-author="" >
+            <span class="post-title" title="Redis系列-Redis-Bitmaps-应用（JAVA-lettuce客户端）">Redis系列-Redis-Bitmaps-应用（JAVA-lettuce客户端）</span>
+            <span class="post-date" title="2019-04-07 20:00:00">2019/04/07</span>
+        </a>
+        
+        <a  class="Redis "
+           href="/redis-hash.html"
+           data-tag="Redis"
+           data-author="" >
+            <span class="post-title" title="Redis系列-Redis-Hash命令讲解（JAVA-lettuce客户端）">Redis系列-Redis-Hash命令讲解（JAVA-lettuce客户端）</span>
+            <span class="post-date" title="2019-04-05 21:00:00">2019/04/05</span>
+        </a>
+        
+        <a  class="Redis "
+           href="/redis-list.html"
+           data-tag="Redis"
+           data-author="" >
+            <span class="post-title" title="Redis系列-Redis-List命令讲解（JAVA-lettuce客户端）">Redis系列-Redis-List命令讲解（JAVA-lettuce客户端）</span>
+            <span class="post-date" title="2019-04-03 21:00:00">2019/04/03</span>
+        </a>
+        
+        <a  class="Redis "
+           href="/redis-string.html"
+           data-tag="Redis"
+           data-author="" >
+            <span class="post-title" title="Redis系列-Redis-String命令讲解（JAVA-lettuce客户端）">Redis系列-Redis-String命令讲解（JAVA-lettuce客户端）</span>
+            <span class="post-date" title="2019-04-01 20:00:00">2019/04/01</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/logback mdc简单实现分布式系统追踪.html"
+           data-tag="JAVA,spring"
+           data-author="" >
+            <span class="post-title" title="spring cloud 简单的分布式日志追踪实现">spring cloud 简单的分布式日志追踪实现</span>
+            <span class="post-date" title="2019-02-01 21:10:02">2019/02/01</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/maven pom 优化遇到的坑.html"
+           data-tag="JAVA"
+           data-author="" >
+            <span class="post-title" title="maven pom 优化导致 rocketmq 启动失败">maven pom 优化导致 rocketmq 启动失败</span>
+            <span class="post-date" title="2018-11-11 17:10:00">2018/11/11</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/组织结构权限.html"
+           data-tag="JAVA"
+           data-author="" >
+            <span class="post-title" title="组织结构及权限的设计">组织结构及权限的设计</span>
+            <span class="post-date" title="2018-10-29 15:06:45">2018/10/29</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/单例模式-简单工厂在实际场景中的应用.html"
+           data-tag="JAVA,spring"
+           data-author="" >
+            <span class="post-title" title="单例模式+简单工厂模式+模板方法模式在实际场景中的应用">单例模式+简单工厂模式+模板方法模式在实际场景中的应用</span>
+            <span class="post-date" title="2018-10-11 18:46:54">2018/10/11</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/JAVA上传base64图片至腾讯云COS.html"
+           data-tag="JAVA,spring"
+           data-author="" >
+            <span class="post-title" title="JAVA上传base64图片至腾讯云COS">JAVA上传base64图片至腾讯云COS</span>
+            <span class="post-date" title="2018-10-03 19:24:36">2018/10/03</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/Spring ContextLoaderListener 启动流程解析二.html"
+           data-tag="JAVA,spring"
+           data-author="" >
+            <span class="post-title" title="Spring ContextLoaderListener 启动流程解析二">Spring ContextLoaderListener 启动流程解析二</span>
+            <span class="post-date" title="2018-09-30 19:00:00">2018/09/30</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/Spring ContextLoaderListener 启动流程解析一.html"
+           data-tag="JAVA,spring"
+           data-author="" >
+            <span class="post-title" title="Spring ContextLoaderListener 启动流程解析一">Spring ContextLoaderListener 启动流程解析一</span>
+            <span class="post-date" title="2018-09-22 21:00:00">2018/09/22</span>
+        </a>
+        
+        <a  class="JAVA 算法 "
+           href="/算法系列-排序算法-归并排序-JAVA.html"
+           data-tag="JAVA,算法"
+           data-author="" >
+            <span class="post-title" title="算法系列-排序算法-归并排序（JAVA版）">算法系列-排序算法-归并排序（JAVA版）</span>
+            <span class="post-date" title="2018-09-17 20:00:00">2018/09/17</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/java多叉树简单了解.html"
+           data-tag="JAVA"
+           data-author="" >
+            <span class="post-title" title="java多叉树简单了解">java多叉树简单了解</span>
+            <span class="post-date" title="2018-09-13 22:32:16">2018/09/13</span>
+        </a>
+        
+        <a  class="JAVA 算法 "
+           href="/算法系列-排序算法-希尔排序-JAVA.html"
+           data-tag="JAVA,算法"
+           data-author="" >
+            <span class="post-title" title="算法系列-排序算法-希尔排序（JAVA版）">算法系列-排序算法-希尔排序（JAVA版）</span>
+            <span class="post-date" title="2018-09-10 20:00:00">2018/09/10</span>
+        </a>
+        
+        <a  class="JAVA 算法 "
+           href="/算法系列-排序算法-插入排序-JAVA.html"
+           data-tag="JAVA,算法"
+           data-author="" >
+            <span class="post-title" title="算法系列-排序算法-直接插入排序（JAVA版）">算法系列-排序算法-直接插入排序（JAVA版）</span>
+            <span class="post-date" title="2018-09-02 20:00:00">2018/09/02</span>
+        </a>
+        
+        <a  class="JAVA 算法 "
+           href="/算法系列-排序算法-冒泡排序-JAVA.html"
+           data-tag="JAVA,算法"
+           data-author="" >
+            <span class="post-title" title="算法系列-排序算法-冒泡排序（JAVA版）">算法系列-排序算法-冒泡排序（JAVA版）</span>
+            <span class="post-date" title="2018-08-30 20:00:00">2018/08/30</span>
+        </a>
+        
+        <a  class="JAVA 算法 "
+           href="/算法系列-排序算法-选择排序-JAVA.html"
+           data-tag="JAVA,算法"
+           data-author="" >
+            <span class="post-title" title="算法系列-排序算法-选择排序（JAVA版）">算法系列-排序算法-选择排序（JAVA版）</span>
+            <span class="post-date" title="2018-08-24 20:00:00">2018/08/24</span>
+        </a>
+        
+        <a  class="JAVA 算法 "
+           href="/算法系列-二分查找-JAVA.html"
+           data-tag="JAVA,算法"
+           data-author="" >
+            <span class="post-title" title="算法系列-二分查找（JAVA版）">算法系列-二分查找（JAVA版）</span>
+            <span class="post-date" title="2018-08-18 18:00:00">2018/08/18</span>
+        </a>
+        
+        <a  class="linux "
+           href="/自己经常用到的命令.html"
+           data-tag="linux"
+           data-author="" >
+            <span class="post-title" title="常用命令">常用命令</span>
+            <span class="post-date" title="2018-08-16 21:29:00">2018/08/16</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/踩坑笔记.html"
+           data-tag="JAVA,linux"
+           data-author="" >
+            <span class="post-title" title="踩坑笔记">踩坑笔记</span>
+            <span class="post-date" title="2018-08-13 20:02:20">2018/08/13</span>
+        </a>
+        
+        <a  class="linux "
+           href="/nginx反向代理配置.html"
+           data-tag="linux"
+           data-author="" >
+            <span class="post-title" title="记录nginx反向代理配置">记录nginx反向代理配置</span>
+            <span class="post-date" title="2018-08-10 12:33:20">2018/08/10</span>
+        </a>
+        
+        <a  class="JAVA "
+           href="/Java-validate-注解验证.html"
+           data-tag="JAVA"
+           data-author="" >
+            <span class="post-title" title="Java validate 注解验证工具类及自定义验证注解">Java validate 注解验证工具类及自定义验证注解</span>
+            <span class="post-date" title="2018-08-07 21:32:16">2018/08/07</span>
+        </a>
+        
+        <a  class="趣味 "
+           href="/有意思的题目.html"
+           data-tag="趣味"
+           data-author="" >
+            <span class="post-title" title="有意思的题目">有意思的题目</span>
+            <span class="post-date" title="2018-07-18 19:59:16">2018/07/18</span>
+        </a>
+        
+        <a  class="JAVA web后端 "
+           href="/mybatis知识点.html"
+           data-tag="JAVA,DB"
+           data-author="" >
+            <span class="post-title" title="mybatis知识点">mybatis知识点</span>
+            <span class="post-date" title="2018-05-25 18:50:45">2018/05/25</span>
+        </a>
+        
+        <a  class="生活 "
+           href="/第一笔.html"
+           data-tag="生活"
+           data-author="" >
+            <span class="post-title" title="第一笔">第一笔</span>
+            <span class="post-date" title="2018-04-01 21:29:00">2018/04/01</span>
+        </a>
+        
+    </nav>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div class="post">
+    <div class="pjax">
+        <article id="post-单例模式-简单工厂在实际场景中的应用" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">单例模式+简单工厂模式+模板方法模式在实际场景中的应用</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a href="javascript:" data-rel="JAVA">JAVA</a>/
+            
+                <a href="javascript:" data-rel="web后端">web后端</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a href="javascript:" class="color5">JAVA</a>
+            
+            <a href="javascript:" class="color2">spring</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2019-09-25 11:05:15'>2018-10-11 18:46</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>字数:2.6k</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+        <span class="top-comment" title="跳转至评论区">
+            <a href="#comments">
+                评论:<span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </a>
+        </span>
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#单例模式"><span class="toc-text">单例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#单例的概念"><span class="toc-text">单例的概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现方法"><span class="toc-text">实现方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#懒汉模式"><span class="toc-text">懒汉模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#饿汉模式"><span class="toc-text">饿汉模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#静态内部类"><span class="toc-text">静态内部类</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工厂模式"><span class="toc-text">工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#工厂模式的概念"><span class="toc-text">工厂模式的概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#工厂模式结构"><span class="toc-text">工厂模式结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优势"><span class="toc-text">优势</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模板方法模式"><span class="toc-text">模板方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#模板方法模式概念"><span class="toc-text">模板方法模式概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模板方法模式结构"><span class="toc-text">模板方法模式结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实际的应用"><span class="toc-text">实际的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于-view-短信服务代码的启发"><span class="toc-text">关于 view 短信服务代码的启发</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#现有代码"><span class="toc-text">现有代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#发现的问题"><span class="toc-text">发现的问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决问题的思路"><span class="toc-text">解决问题的思路</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开始改善"><span class="toc-text">开始改善</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#名词解释"><span class="toc-text">名词解释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-Product-ConcreteProduct"><span class="toc-text">创建 Product ConcreteProduct</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#短信抽象产品-Product"><span class="toc-text">短信抽象产品 Product</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#短信渠道实例-ConcreteProduct"><span class="toc-text">短信渠道实例 ConcreteProduct</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#引入模板方法"><span class="toc-text">引入模板方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-Factory"><span class="toc-text">创建 Factory</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#初步设计"><span class="toc-text">初步设计</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#SmsFactory-的问题"><span class="toc-text">SmsFactory 的问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#再次升级"><span class="toc-text">再次升级</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#升级-Factory"><span class="toc-text">升级 Factory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#升级-ConcreteProduct"><span class="toc-text">升级 ConcreteProduct</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试一下"><span class="toc-text">测试一下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态路由"><span class="toc-text">动态路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一张图表示一下"><span class="toc-text">一张图表示一下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#完全的交给-spring-管理"><span class="toc-text">完全的交给 spring 管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Factory-可以这样升级"><span class="toc-text">Factory 可以这样升级</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Product-可以这样升级"><span class="toc-text">Product 可以这样升级</span></a></li></ol></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-5 i,
+    .toc-level-5 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><h3 id="单例的概念"><a href="#单例的概念" class="headerlink" title="单例的概念"></a>单例的概念</h3><ul>
+<li>单例类只能有一个实例。</li>
+<li>单例类必须自己创建自己的唯一实例。</li>
+<li>单例类必须给所有其他对象提供这一实例。</li>
+</ul>
+<h3 id="实现方法"><a href="#实现方法" class="headerlink" title="实现方法"></a>实现方法</h3><h4 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h4><pre><code class="java">//非线程安全
+public class Singleton1 {
+    private Singleton1() {
+    }
+    private static Singleton1 single = null;
+    public static Singleton1 getInstance() {
+        if (single == null) {
+            single = new Singleton1();
+        }
+        return single;
+    }
+}
+//线程安全 锁 性能低
+public class Singleton2 {
+    private static Singleton2 instance = null;
+    private Singleton2() {
+    }
+    public static synchronized Singleton2 getInstance() {
+        if (instance == null) {
+            instance = new Singleton2();
+        }
+        return instance;
+    }
+}</code></pre>
+<h4 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h4><pre><code class="java">//静态常量 线程安全 可能浪费资源
+public class Singleton1 {
+    private static final Singleton1 single = new Singleton1();
+    private Singleton1() {
+    }
+    public static Singleton1 getInstance() {
+        return single;
+    }
+}</code></pre>
+<h4 id="静态内部类"><a href="#静态内部类" class="headerlink" title="静态内部类"></a>静态内部类</h4><pre><code class="java">//静态内部类，线程安全，推荐
+//利用了classloader的机制来保证初始化instance时只有一个线程
+public class Singleton3 {
+    private static class LazyHolder {
+        private static final Singleton3 INSTANCE = new Singleton3();
+    }
+    private Singleton3() {
+    }
+    public static Singleton3 getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+}</code></pre>
+<h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><h3 id="工厂模式的概念"><a href="#工厂模式的概念" class="headerlink" title="工厂模式的概念"></a>工厂模式的概念</h3><p>又称为静态工厂方法(Static Factory Method)模式，它属于类创建型模式。在简单工厂模式中，可以根据参数的不同返回不同类的实例。简单工厂模式专门定义一个类来负责创建其他类的实例，被创建的实例通常都具有共同的父类。</p>
+<h3 id="工厂模式结构"><a href="#工厂模式结构" class="headerlink" title="工厂模式结构"></a>工厂模式结构</h3><ul>
+<li><p>Factory ：工厂角色负责实现创建所有实例的内部逻辑</p>
+</li>
+<li><p>Product ：抽象产品是所创建的所有对象的父类，负责描述所有实例所共有的公共接口</p>
+</li>
+<li><p>ConcreteProduct ：具体产品角色是创建的目标，所有创建的对象都充当这个角色的某个具体类的实例。</p>
+</li>
+<li><p>结构图</p>
+<ul>
+<li><img src="/images/factory/SimpleFactory.jpg" alt="结构图"></li>
+</ul>
+</li>
+</ul>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><p>将对象的创建和对象本身业务处理分离可以降低系统的耦合度，使得两者修改起来都相对容易。<br>在调用工厂类的工厂方法时，由于工厂方法是静态方法，使用起来很方便，可通过类名直接调用，而且只需要传入一个简单的参数即可，在实际开发中，还可以在调用时将所传入的参数保存在XML等格式的配置文件中，修改参数时无须修改任何源代码。</p>
+<h2 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h2><h3 id="模板方法模式概念"><a href="#模板方法模式概念" class="headerlink" title="模板方法模式概念"></a>模板方法模式概念</h3><p>定义一个操作中算法的骨架，而将这些步骤延迟到子类中，模板方法使得子类可以不改变一个算法的结构即可重新定义该算法的某些特定步骤。</p>
+<h3 id="模板方法模式结构"><a href="#模板方法模式结构" class="headerlink" title="模板方法模式结构"></a>模板方法模式结构</h3><ul>
+<li>Abstract Template  抽象模板<ul>
+<li>定义了一个或多个抽象操作，以便让子类实现。</li>
+<li>定义并实现了一个模板方法。这个模板方法一般是一个具体方法，它给出了一个顶级逻辑的骨架，而逻辑的组成步骤在相应的抽象操作中，推迟到子类实现。顶级逻辑也有可能调用一些具体方法。</li>
+</ul>
+</li>
+<li>Concrete Template 具体模板<ul>
+<li>实现父类所定义的一个或多个抽象方法。</li>
+<li>每一个抽象模板角色都可以有任意多个具体模板角色与之对应，而每一个具体模板角色都可以给出这些抽象方法（也就是顶级逻辑的组成步骤）的不同实现，从而使得顶级逻辑的实现各不相同。</li>
+</ul>
+</li>
+<li>结构图<ul>
+<li><img src="/images/factory/Template.png" alt="结构图"></li>
+</ul>
+</li>
+</ul>
+<h2 id="实际的应用"><a href="#实际的应用" class="headerlink" title="实际的应用"></a>实际的应用</h2><h3 id="关于-view-短信服务代码的启发"><a href="#关于-view-短信服务代码的启发" class="headerlink" title="关于 view 短信服务代码的启发"></a>关于 view 短信服务代码的启发</h3><h4 id="现有代码"><a href="#现有代码" class="headerlink" title="现有代码"></a>现有代码</h4><pre><code class="java">/**
+ * 发送短信
+ *
+ * @param phone       电话
+ * @param content     内容
+ * @param mobileStat  短链接短信是否统计 默认false不统计（只对云片平台有效）
+ * @param smsPlatform 短信发送平台 1：云片 2：三通
+ * @param isBatchSend 是否是批量发送 0:false 1:true
+ * @return
+ */
+public ResultInfo sendSmsWithText(String phone,
+                                  String content,
+                                  String mobileStat,
+                                  String smsPlatform,
+                                  String isBatchSend) {
+    return smsService.sendSmsWithText(phone, content, mobileStat, smsPlatform, isBatchSend);
+}
+
+...
+
+if (smsPlatform.equals(&quot;1&quot;)) {
+    //todo 云片
+} else {
+    //todo 三通
+}</code></pre>
+<h4 id="发现的问题"><a href="#发现的问题" class="headerlink" title="发现的问题"></a>发现的问题</h4><ul>
+<li>每增加一个渠道，就要修改主流程的逻辑，代码变得越来越难以维护</li>
+<li>代码耦合高，牵一发而动全身</li>
+<li>如果某一短信渠道挂掉，不得不紧急上线修改</li>
+</ul>
+<h4 id="解决问题的思路"><a href="#解决问题的思路" class="headerlink" title="解决问题的思路"></a>解决问题的思路</h4><ul>
+<li><p>云片和三通做的事情都是发送短信，他们的输入输出应该保持一致，即可抽象出短信 Product</p>
+</li>
+<li><p>每一个短信渠道它只关心自己的内部实现，而不关心外部的事情，程序只要正确的输入输出即可。不难发现，每个短信渠道 实则是一个 ConcreteProduct 具体的产品， ConcreteProduct 之间应该是完全解耦的。</p>
+</li>
+<li><p>有了 ConcreteProduct 必然要有短信 Factory ，即每个短信渠道 ConcreteProduct 的创建工厂。</p>
+</li>
+<li><p>发送短信的整个流程大致是固定的，即检查参数，发送短信，解析结果。模板方法的也就可以引进。</p>
+</li>
+<li><p>Factory 在实际中确保唯一，即保持单例。ConcreteProduct 也应确保单例。</p>
+</li>
+</ul>
+<h2 id="开始改善"><a href="#开始改善" class="headerlink" title="开始改善"></a>开始改善</h2><h3 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li>Factory 短信工厂</li>
+<li>Product 短信抽象产品</li>
+<li>ConcreteProduct 短信具体产品（渠道）</li>
+<li>Abstract Template 短信抽象模板</li>
+</ul>
+<h3 id="创建-Product-ConcreteProduct"><a href="#创建-Product-ConcreteProduct" class="headerlink" title="创建 Product ConcreteProduct"></a>创建 Product ConcreteProduct</h3><h4 id="短信抽象产品-Product"><a href="#短信抽象产品-Product" class="headerlink" title="短信抽象产品 Product"></a>短信抽象产品 Product</h4><pre><code class="java">/**
+ * 短信接口
+ *
+ * @author cuishilei
+ * @date 2018/9/26
+ */
+public interface SmsProduct {
+
+    String send(Map param);
+
+}</code></pre>
+<h4 id="短信渠道实例-ConcreteProduct"><a href="#短信渠道实例-ConcreteProduct" class="headerlink" title="短信渠道实例 ConcreteProduct"></a>短信渠道实例 ConcreteProduct</h4><pre><code class="java">/**
+ * @author cuishilei
+ * @date 2018/9/26
+ */
+public class SanTongSmsProduct implements SmsProduct {
+    @Override
+    public String send(Map param) {
+        //三通短信发送的业务逻辑
+        return &quot;success&quot;;
+    }
+}
+
+/**
+ * @author cuishilei
+ * @date 2018/9/26
+ */
+public class YunPianSmsProduct implements SmsProduct {
+    @Override
+    public String send(Map param) {
+        //云片短信发送的业务逻辑
+        return &quot;success&quot;;
+    }
+}</code></pre>
+<h4 id="引入模板方法"><a href="#引入模板方法" class="headerlink" title="引入模板方法"></a>引入模板方法</h4><p>相同的业务的不同渠道做业务时可能会有统一的处理方法，比如参数检查、渠道状态检查、记流水等。此时可以引入模板方法：</p>
+<pre><code class="java">public abstract class AbstractSmsProduct implements SmsProduct {
+
+    @Override
+    public String send(Map param) {
+        //1.参数检查
+        System.out.println(&quot;---参数检查---&quot;);
+        //2.入流水
+        System.out.println(&quot;---入流水---&quot;);
+        //3.执行
+        doSend(param);
+        //4.后续操作
+        System.out.println(&quot;---更新流水状态---&quot;);
+        return &quot;success&quot;;
+    }
+
+    abstract String doSend(Map param);
+
+}
+
+public class YunPianSmsProductV2 extends AbstractSmsProduct {
+
+    @Override
+    String doSend(Map param) {
+        //云片短信发送的业务逻辑
+        System.out.println(&quot;---云片发送短信---&quot;);
+        return &quot;success&quot;;
+    }
+}
+
+public class SanTongSmsProductV2 extends AbstractSmsProduct {
+
+    @Override
+    String doSend(Map param) {
+        //三通短信发送的业务逻辑
+        System.out.println(&quot;---三通发送短信---&quot;);
+        return &quot;success&quot;;
+    }
+}</code></pre>
+<h3 id="创建-Factory"><a href="#创建-Factory" class="headerlink" title="创建 Factory"></a>创建 Factory</h3><h4 id="初步设计"><a href="#初步设计" class="headerlink" title="初步设计"></a>初步设计</h4><pre><code class="java">public class SmsFactory {
+
+    public static SmsProduct getProduct(String arg) {
+        SmsProduct product = null;
+        if (&quot;A&quot;.equalsIgnoreCase(arg)) {
+            product = new SanTongSmsProductV2();
+        } else if (&quot;B&quot;.equalsIgnoreCase(arg)) {
+            product = new YunPianSmsProductV2();
+        }
+        return product;
+    }
+
+}</code></pre>
+<h5 id="SmsFactory-的问题"><a href="#SmsFactory-的问题" class="headerlink" title="SmsFactory 的问题"></a>SmsFactory 的问题</h5><ol>
+<li>Factory 每增加一个 Product ，则要改变一下 Factory 的生产方法。</li>
+<li>Product 是 new 出来的，不是单例。</li>
+</ol>
+<h3 id="再次升级"><a href="#再次升级" class="headerlink" title="再次升级"></a>再次升级</h3><p>试想一下有没有一种办法让 ConcreteProduct 自动注册到 Factory 。<br>联想到 java 开发的主流框架 spring 对 java bean 的管理，我们可以借助 spring 管理来让 ConcreteProduct 主动注册到 Factory 。</p>
+<h4 id="升级-Factory"><a href="#升级-Factory" class="headerlink" title="升级 Factory"></a>升级 Factory</h4><ul>
+<li>注册到 Factory 中必须有个标识 key 来表明这个是“三通”、那个是“云片”，很熟悉 key-value</li>
+<li>Factory 不在使用静态类静态方法而是使用单例模式<ul>
+<li>关于静态类和单例模式的优缺点请参考此片博客<a href="http://sooxin.iteye.com/blog/796987" target="_blank" rel="noopener">http://sooxin.iteye.com/blog/796987</a></li>
+</ul>
+</li>
+</ul>
+<p>升级后的 Factory 如下：</p>
+<pre><code class="java">public class SmsFactory {
+    private static SmsFactory instance = null;
+
+    private static Map&lt;String, SmsProduct&gt; productMap = null;
+
+    private SmsFactory() {
+        productMap = new HashMap&lt;&gt;();
+    }
+
+    private static class LazyHolder {
+        private static final SmsFactory INSTANCE = new SmsFactory();
+    }
+
+    public static SmsFactory getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+
+    /**
+     * 渠道注册
+     *
+     * @param key
+     * @param product
+     * @author cuishilei
+     * @date 2018/10/31
+     */
+    public void register(String key, SmsProduct product) {
+        productMap.put(key, product);
+    }
+
+    /**
+     * 获取渠道实例
+     *
+     * @param key
+     * @return com.lalala.cc.sms.SmsProduct
+     * @author cuishilei
+     * @date 2018/10/31
+     */
+    public SmsProduct getProduct(String key) {
+        return productMap.get(key);
+    }
+
+}</code></pre>
+<h4 id="升级-ConcreteProduct"><a href="#升级-ConcreteProduct" class="headerlink" title="升级 ConcreteProduct"></a>升级 ConcreteProduct</h4><p>ConcreteProduct 需要自动注册进 Factory ，这里我们以 javaEE spring 来举例</p>
+<pre><code class="java">@Service
+public class YunPianSmsProductV2 extends AbstractSmsProduct {
+
+    @PostConstruct
+    private void init() {
+        SmsFactory.getInstance().register(&quot;SMS_YUNPIAN&quot;, this);
+    }
+
+    @Override
+    String doSend(Map param) {
+        //云片短信发送的业务逻辑
+        System.out.println(&quot;---云片发送短信---&quot;);
+        return &quot;success&quot;;
+    }
+}
+
+@Service
+public class SanTongSmsProductV2 extends AbstractSmsProduct {
+
+    @PostConstruct
+    private void init() {
+        SmsFactory.getInstance().register(&quot;SMS_SANTONG&quot;, this);
+    }
+
+    @Override
+    String doSend(Map param) {
+        //三通短信发送的业务逻辑
+        System.out.println(&quot;---三通发送短信---&quot;);
+        return &quot;success&quot;;
+    }
+}</code></pre>
+<p>可以看到关键就在 @PostConstruct 标签下的方法。被@PostConstruct修饰的方法会在服务器加载Servlet的时候运行，并且只会被服务器调用一次。这样我们就可以通过下面的代码</p>
+<pre><code class="java">SmsFactory.getInstance().register(&quot;SMS_SANTONG&quot;, this);</code></pre>
+<p>来“注册”进 Factory 。</p>
+<h3 id="测试一下"><a href="#测试一下" class="headerlink" title="测试一下"></a>测试一下</h3><p>代码到这里差不多就完成了，我们来测试一下。</p>
+<p>项目目录结构如下：</p>
+<p><img src="/images/factory/mulu.png" alt="结构图"></p>
+<p>测试类中的方法：</p>
+<pre><code class="java">@Service
+public class TestService {
+
+    void test() {
+        System.out.println(&quot;开始执行发送短信&quot;);
+        SmsProduct product = SmsFactory.getInstance().getProduct(&quot;SMS_YUNPIAN&quot;);
+        if (product == null) {
+            System.out.println(&quot;渠道实例不存在，请检查&quot;);
+        } else {
+            product.send(new HashMap());
+        }
+        System.out.println(&quot;结束执行发送短信&quot;);
+    }
+}</code></pre>
+<p>执行结果：</p>
+<p><img src="/images/factory/jieguo.png" alt="结构图"></p>
+<h3 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h3><p>作为第三方服务的短信渠道是不可以完全相信的，这就是为什么接这些渠道必须大于等于2的原因。那如何在某一个渠道挂掉的情况下让程序不在走这个渠道呢，可以通过数据库配置来实现：</p>
+<pre><code class="java">@Service
+public class TestService {
+    @Resource
+    private SmsFactoryV2 smsFactoryV2;
+    @Resource
+    private SmsDao smsDao;
+
+    void test() {
+        System.out.println(&quot;开始执行发送短信&quot;);
+
+        //从数据库获取渠道 key
+        String avaliableSmsKey = smsDao.queryAvaliableSmsKey();
+
+        SmsProduct product = SmsFactory.getInstance().getProduct(avaliableSmsKey);
+        if (product == null) {
+            System.out.println(&quot;渠道实例不存在，请检查&quot;);
+        } else {
+            product.send(new HashMap());
+        }
+        System.out.println(&quot;结束执行发送短信&quot;);
+    }
+}</code></pre>
+<p>动态路由可以设计的很复杂，可以通过渠道流水的数据统计分析达到动态切换的目的，这里不做叙述了。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>到这里代码就改善完成了，这样下来的好处有什么呢？</p>
+<ul>
+<li>短信工厂建立完毕以后极少的修改</li>
+<li>短信渠之间的完全解耦</li>
+<li>动态路由的敏捷性好处</li>
+</ul>
+<h3 id="一张图表示一下"><a href="#一张图表示一下" class="headerlink" title="一张图表示一下"></a>一张图表示一下</h3><p><img src="/images/factory/shiyong.jpg" alt="一张图表示一下"></p>
+<h3 id="完全的交给-spring-管理"><a href="#完全的交给-spring-管理" class="headerlink" title="完全的交给 spring 管理"></a>完全的交给 spring 管理</h3><h4 id="Factory-可以这样升级"><a href="#Factory-可以这样升级" class="headerlink" title="Factory 可以这样升级"></a>Factory 可以这样升级</h4><pre><code class="java">@Service
+public class SmsFactoryV2 {
+    @Resource
+    private SmsProduct[] products;
+
+    private Map&lt;String, SmsProduct&gt; serviceMap = null;
+
+    @PostConstruct
+    public void init() {
+        serviceMap = new HashMap&lt;&gt;();
+        for (SmsProduct service : products) {
+            serviceMap.put(service.key(), service);
+        }
+    }
+
+    public SmsProduct getService(String key) {
+        return serviceMap.get(key);
+    }
+
+}</code></pre>
+<h4 id="Product-可以这样升级"><a href="#Product-可以这样升级" class="headerlink" title="Product 可以这样升级"></a>Product 可以这样升级</h4><pre><code class="java">public interface SmsProduct {
+
+    String send(Map param);
+
+    String key();
+
+}
+
+@Service
+public class SanTongSmsProductV2 extends AbstractSmsProduct {
+
+    @Override
+    String doSend(Map param) {
+        //三通短信发送的业务逻辑
+        System.out.println(&quot;---三通发送短信---&quot;);
+        return &quot;success&quot;;
+    }
+
+    @Override
+    public String key() {
+        return &quot;SMS_SANTONG&quot;;
+    }
+}
+</code></pre>
+<p>结束！</p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 rockeycui@163.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a href="javascript:void(0)" class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>单例模式+简单工厂模式+模板方法模式在实际场景中的应用</p>
+    <p><span class="copy-title">文章字数:</span><span class="post-count">2.6k</span></p>
+    <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="崔石磊(RockeyCui)">崔石磊(RockeyCui)</a></p>
+    <p><span class="copy-title">发布时间:</span>2018-10-11, 18:46:54</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/单例模式-简单工厂在实际场景中的应用.html" title="单例模式+简单工厂模式+模板方法模式在实际场景中的应用">https://cuishilei.com/单例模式-简单工厂在实际场景中的应用.html</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+    <div id="comments"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+<script type="text/javascript">
+    $.getScript('/js/gitalk.js', function () {
+        var gitalk = new Gitalk({
+            clientID: 'c5626bf15aa8eee3b949',
+            clientSecret: '2cef675fceaff221e67b92c2645480fd537b5d44',
+            repo: 'gittalk',
+            owner: 'RockeyCui',
+            admin: ['RockeyCui'],
+            id: decodeURI(location.pathname),
+            distractionFreeMode: 'true',
+            language: 'zh-CN',
+            perPage: parseInt('10',10)
+        })
+        gitalk.render('comments')
+    })
+</script>
+
+
+
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">©2018-2020 RockeyCui 版权所有 ICP证：<a href='http://www.beian.miit.gov.cn'>冀ICP备18025584号</a></p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full"><span class="min "></span></button>
+<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
+<div class="post-toc"><span class="post-toc-title">目录</span>
+    <div class="post-toc-content">
+
+    </div>
+</div>
+<a class="" id="rocket" href="javascript:void(0)"></a>
+    </div>
+</div>
+<div class="acParent"></div>
+
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>喜欢就点赞,疼爱就打赏</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.0.1" ></script>
+
+<script src="/js/script.js?v=1.0.1" ></script>
+<script>
+    var img_resize = 'default';
+    /*作者、标签的自动补全*/
+    $(function () {
+        $('.search').AutoComplete({
+            'data': ['#JAVA','#cache','#spring','#flink','#DB','#linux','#Redis','#生活','#趣味','#算法',],
+            'itemHeight': 20,
+            'width': 418
+        }).AutoComplete('show');
+    })
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $(".post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+        $("input[name=pay]").on("click", function () {
+            if($("input[name=pay]:checked").val()=="weixin"){
+                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
+            } else {
+                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
+            }
+        })
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().split('\n').length - 1, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: ;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+        .nav .hide-list.fullscreen {
+            left: 492px
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
+        border: #e2dede solid 1px;
+        border-radius: 10px;
+        padding: 10px 32px 10px 56px;
+    }
+    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+    .nav-right:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.3;
+        background: url("https://i.loli.net/2019/07/22/5d3521411f3f169375.png");
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
