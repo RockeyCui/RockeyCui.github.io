@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>常用命令 | RockeyCui的博客</title>
-  <meta name="keywords" content=" linux ">
-  <meta name="description" content="常用命令 | RockeyCui的博客">
+  <title>JAVA8-Stream-List 排序 | RockeyCui的博客</title>
+  <meta name="keywords" content=" JAVA ">
+  <meta name="description" content="JAVA8-Stream-List 排序 | RockeyCui的博客">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="keywords" content="rockeycui cuishilei 崔石磊">
 <meta property="og:type" content="website">
@@ -553,9 +553,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-自己经常用到的命令" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-java8-stream-demo2" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">常用命令</h1>
+        <h1 class="article-title">JAVA8-Stream-List 排序</h1>
     
     <div class="article-meta">
         
@@ -563,26 +563,26 @@
         
         <span class="book">
             
-                <a href="javascript:" data-rel="linux">linux</a>
+                <a href="javascript:" data-rel="JAVA">JAVA</a>
             
         </span>
         
         
         <span class="tag">
             
-            <a href="javascript:" class="color1">linux</a>
+            <a href="javascript:" class="color5">JAVA</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-09-25 11:05:15'>2018-08-16 21:29</time>
+        创建时间:<time class="date" title='更新时间: 2020-08-03 11:19:17'>2020-06-16 18:21</time>
         
     </div>
     <div class="article-meta">
         
-        <span>字数:134</span>
+        <span>字数:188</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -612,7 +612,7 @@
     
     <div class="toc-ref">
     
-        
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#对-List-中的元素进行排序"><span class="toc-text">对 List 中的元素进行排序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#升序排序"><span class="toc-text">升序排序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#降序排序"><span class="toc-text">降序排序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#“order-by”-排序"><span class="toc-text">“order by” 排序</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -627,20 +627,31 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>查看xx日志内匹配的内容</p>
-<pre><code class="shell">tail -100f xx.log | grep xxx</code></pre>
-<p>查看程序名称含有Java的线程状态及线程号</p>
-<pre><code class="shell">ps -ef|grep java</code></pre>
-<p>链接redis</p>
-<pre><code class="shell">redis-cli -h 127.0.0.1 -p 7000</code></pre>
-<p>查看硬盘空间状态</p>
-<pre><code class="shell">df -h</code></pre>
-<p>查找大于100M的匹配 *.log的文件并列出地址</p>
-<pre><code class="shell">find / -size +100M -name *.log -exec ls -lh {} \;</code></pre>
-<p>密码登录远程ssh</p>
-<pre><code class="shell">sshpass -p &#39;123456&#39; ssh user@127.0.0.1</code></pre>
-<p>递归查找home目录下匹配为 <em>.</em>的文件并复制到rock目录</p>
-<pre><code class="shell">find /home/ -name &#39;*.*&#39; |xargs -I{} cp {} /rock</code></pre>
+        <h3 id="对-List-中的元素进行排序"><a href="#对-List-中的元素进行排序" class="headerlink" title="对 List 中的元素进行排序"></a>对 List 中的元素进行排序</h3><h4 id="升序排序"><a href="#升序排序" class="headerlink" title="升序排序"></a>升序排序</h4><pre><code class="java">//根据 id 升序排序
+List&lt;Demo&gt; collect = data.stream()
+        .sorted(Comparator.comparing(Demo::getId))
+        .peek(System.out::println)
+        .collect(Collectors.toList());</code></pre>
+<h4 id="降序排序"><a href="#降序排序" class="headerlink" title="降序排序"></a>降序排序</h4><pre><code class="java">//根据 id 降序排序
+collect = data.stream()
+        //错误用法，这样写的话实际上是先升序排序一次再反转排序一次，进行了两次
+        .sorted(Comparator.comparing(Demo::getId).reversed())
+        .peek(System.out::println)
+        .collect(Collectors.toList());
+collect = data.stream()
+        //这个才是正确写法
+        .sorted(Comparator.comparing(Demo::getId, Comparator.reverseOrder()))
+        .peek(System.out::println)
+        .collect(Collectors.toList());</code></pre>
+<h4 id="“order-by”-排序"><a href="#“order-by”-排序" class="headerlink" title="“order by” 排序"></a>“order by” 排序</h4><p>我个人这么叫的，无所谓。顾名思义和 sql 的排序一样，根据多个字段排序。</p>
+<pre><code class="java">//先根据性别排序，在根据id排序
+collect = data.stream()
+        .sorted(Comparator
+                .comparing(Demo::getSex)
+                .thenComparing(Demo::getId)
+        )
+        .peek(System.out::println)
+        .collect(Collectors.toList());</code></pre>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 rockeycui@163.com </span>
@@ -654,11 +665,11 @@
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>常用命令</p>
-    <p><span class="copy-title">文章字数:</span><span class="post-count">134</span></p>
+    <p><span class="copy-title">文章标题:</span>JAVA8-Stream-List 排序</p>
+    <p><span class="copy-title">文章字数:</span><span class="post-count">188</span></p>
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="崔石磊(RockeyCui)">崔石磊(RockeyCui)</a></p>
-    <p><span class="copy-title">发布时间:</span>2018-08-16, 21:29:00</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/自己经常用到的命令.html" title="常用命令">https://cuishilei.com/自己经常用到的命令.html</a>
+    <p><span class="copy-title">发布时间:</span>2020-06-16, 18:21:02</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/java8-stream-demo2.html" title="JAVA8-Stream-List 排序">https://cuishilei.com/java8-stream-demo2.html</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>
