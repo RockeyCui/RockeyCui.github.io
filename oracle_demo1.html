@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>Spring ContextLoaderListener 启动流程解析二 | RockeyCui的博客</title>
-  <meta name="keywords" content=" JAVA , spring ">
-  <meta name="description" content="Spring ContextLoaderListener 启动流程解析二 | RockeyCui的博客">
+  <title>oracle 获得各种时间段 | RockeyCui的博客</title>
+  <meta name="keywords" content=" 数据库 ">
+  <meta name="description" content="oracle 获得各种时间段 | RockeyCui的博客">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="“我们先把产品做出来，后续再改进”，这根本做不到！">
 <meta name="keywords" content="rockeycui cuishilei 崔石磊">
@@ -576,9 +576,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-Spring ContextLoaderListener 启动流程解析二" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-oracle_demo1" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Spring ContextLoaderListener 启动流程解析二</h1>
+        <h1 class="article-title">oracle 获得各种时间段</h1>
     
     <div class="article-meta">
         
@@ -586,30 +586,26 @@
         
         <span class="book">
             
-                <a href="javascript:" data-rel="JAVA">JAVA</a>/
-            
-                <a href="javascript:" data-rel="web后端">web后端</a>
+                <a href="javascript:" data-rel="数据库">数据库</a>
             
         </span>
         
         
         <span class="tag">
             
-            <a href="javascript:" class="color5">JAVA</a>
-            
-            <a href="javascript:" class="color2">spring</a>
+            <a href="javascript:" class="color4">数据库</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-09-25 11:05:15'>2018-09-30 19:00</time>
+        创建时间:<time class="date" title='更新时间: 2020-08-05 17:24:28'>2020-08-05 18:36</time>
         
     </div>
     <div class="article-meta">
         
-        <span>字数:773</span>
+        <span>字数:175</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -639,7 +635,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#AbstractApplicationContext-obtainFreshBeanFactory"><span class="toc-text">AbstractApplicationContext.obtainFreshBeanFactory</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AbstractRefreshableApplicationContext-refreshBeanFactory"><span class="toc-text">AbstractRefreshableApplicationContext.refreshBeanFactory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#XmlWebApplicationContext-loadBeanDefinitions"><span class="toc-text">XmlWebApplicationContext.loadBeanDefinitions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DefaultBeanDefinitionDocumentReader-doRegisterBeanDefinitions"><span class="toc-text">DefaultBeanDefinitionDocumentReader.doRegisterBeanDefinitions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DefaultBeanDefinitionDocumentReader-parseBeanDefinitions"><span class="toc-text">DefaultBeanDefinitionDocumentReader.parseBeanDefinitions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DefaultBeanDefinitionDocumentReader-parseDefaultElement"><span class="toc-text">DefaultBeanDefinitionDocumentReader.parseDefaultElement</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DefaultListableBeanFactory-registerBeanDefinition"><span class="toc-text">DefaultListableBeanFactory.registerBeanDefinition</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#最近-N-天"><span class="toc-text">最近 N 天</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#月初至当天"><span class="toc-text">月初至当天</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#年初以来的每月末"><span class="toc-text">年初以来的每月末</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -654,145 +650,28 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本篇博客主要讲的 spring 如何初始化其上下文的源码简单解读。</p>
-<p>上次我们讲到了 AbstractApplicationContext.refresh() 这个方法。</p>
-<pre><code class="java">    public void refresh() throws BeansException, IllegalStateException {
-        synchronized(this.startupShutdownMonitor) {
-            //容器刷新前准备工作
-            this.prepareRefresh();
-            //启动 obtainFreshBeanFactory 里的 refreshBeanFactory() 方法
-            //主要是把旧的 beanFactory 关闭，重新创建一个 beanFactory
-            ConfigurableListableBeanFactory beanFactory = this.obtainFreshBeanFactory();
-            this.prepareBeanFactory(beanFactory);
-
-            ...
-</code></pre>
-<p>接下来讲解 BeanFactory 是如何创建的。可以看到 beanFactory 是通过 obtainFreshBeanFactory() 这个方法创建的。</p>
-<h3 id="AbstractApplicationContext-obtainFreshBeanFactory"><a href="#AbstractApplicationContext-obtainFreshBeanFactory" class="headerlink" title="AbstractApplicationContext.obtainFreshBeanFactory"></a>AbstractApplicationContext.obtainFreshBeanFactory</h3><pre><code class="java">    protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
-        //把旧的 beanFactory 关闭，重新创建一个 beanFactory
-        this.refreshBeanFactory();
-        ConfigurableListableBeanFactory beanFactory = this.getBeanFactory();
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug(&quot;Bean factory for &quot; + this.getDisplayName() + &quot;: &quot; + beanFactory);
-        }
-
-        return beanFactory;
-    }</code></pre>
-<h4 id="AbstractRefreshableApplicationContext-refreshBeanFactory"><a href="#AbstractRefreshableApplicationContext-refreshBeanFactory" class="headerlink" title="AbstractRefreshableApplicationContext.refreshBeanFactory"></a>AbstractRefreshableApplicationContext.refreshBeanFactory</h4><pre><code class="java">    protected final void refreshBeanFactory() throws BeansException {
-        //删除旧的 beanFactory
-        if (this.hasBeanFactory()) {
-            this.destroyBeans();
-            this.closeBeanFactory();
-        }
-
-        try {
-            DefaultListableBeanFactory beanFactory = this.createBeanFactory();
-            beanFactory.setSerializationId(this.getId());
-            //用户自定义 beanFactory，不做赘述
-            this.customizeBeanFactory(beanFactory);
-            //加载用户的 bean 配置文件
-            this.loadBeanDefinitions(beanFactory);
-            synchronized(this.beanFactoryMonitor) {
-                this.beanFactory = beanFactory;
-            }
-        } catch (IOException var5) {
-            throw new ApplicationContextException(&quot;I/O error parsing bean definition source for &quot; + this.getDisplayName(), var5);
-        }
-    }</code></pre>
-<h4 id="XmlWebApplicationContext-loadBeanDefinitions"><a href="#XmlWebApplicationContext-loadBeanDefinitions" class="headerlink" title="XmlWebApplicationContext.loadBeanDefinitions"></a>XmlWebApplicationContext.loadBeanDefinitions</h4><blockquote>
-<p>参考 <a href="https://www.imooc.com/article/13900" target="_blank" rel="noopener">https://www.imooc.com/article/13900</a></p>
-</blockquote>
-<p>loadBeanDefinitions 的主要工作就是获取配置，解析配置，得到 xml Document 对象，然后继续进行下面的解析：</p>
-<h4 id="DefaultBeanDefinitionDocumentReader-doRegisterBeanDefinitions"><a href="#DefaultBeanDefinitionDocumentReader-doRegisterBeanDefinitions" class="headerlink" title="DefaultBeanDefinitionDocumentReader.doRegisterBeanDefinitions"></a>DefaultBeanDefinitionDocumentReader.doRegisterBeanDefinitions</h4><pre><code class="java">    protected void doRegisterBeanDefinitions(Element root) {
-        String profileSpec = root.getAttribute(&quot;profile&quot;);
-        if (StringUtils.hasText(profileSpec)) {
-            Assert.state(this.environment != null, &quot;Environment must be set for evaluating profiles&quot;);
-            String[] specifiedProfiles = StringUtils.tokenizeToStringArray(profileSpec, &quot;,; &quot;);
-            if (!this.environment.acceptsProfiles(specifiedProfiles)) {
-                return;
-            }
-        }
-
-        BeanDefinitionParserDelegate parent = this.delegate;
-        this.delegate = this.createHelper(this.readerContext, root, parent);
-        this.preProcessXml(root);
-        //主要看这个方法
-        this.parseBeanDefinitions(root, this.delegate);
-        this.postProcessXml(root);
-        this.delegate = parent;
-    }</code></pre>
-<h4 id="DefaultBeanDefinitionDocumentReader-parseBeanDefinitions"><a href="#DefaultBeanDefinitionDocumentReader-parseBeanDefinitions" class="headerlink" title="DefaultBeanDefinitionDocumentReader.parseBeanDefinitions"></a>DefaultBeanDefinitionDocumentReader.parseBeanDefinitions</h4><blockquote>
-<p>参考 <a href="https://www.imooc.com/article/13901" target="_blank" rel="noopener">https://www.imooc.com/article/13901</a></p>
-</blockquote>
-<p>parseBeanDefinitions 判断当前解析元素是否属于默认的命名空间，如果是的话，就调用 parseDefaultElement() 方法，否则调用 delegate.parseCustomElement() 方法。</p>
-<pre><code class="java">    protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
-        if (delegate.isDefaultNamespace(root)) {
-            NodeList nl = root.getChildNodes();
-
-            for(int i = 0; i &lt; nl.getLength(); ++i) {
-                Node node = nl.item(i);
-                if (node instanceof Element) {
-                    Element ele = (Element)node;
-                    if (delegate.isDefaultNamespace(ele)) {
-                        //当前解析元素属于默认的命名空间，解析 spring 默认的标签，如 &lt;bean/&gt; 这些
-                        this.parseDefaultElement(ele, delegate);
-                    } else {
-                        delegate.parseCustomElement(ele);
-                    }
-                }
-            }
-        } else {
-            delegate.parseCustomElement(root);
-        }
-
-    }</code></pre>
-<h4 id="DefaultBeanDefinitionDocumentReader-parseDefaultElement"><a href="#DefaultBeanDefinitionDocumentReader-parseDefaultElement" class="headerlink" title="DefaultBeanDefinitionDocumentReader.parseDefaultElement"></a>DefaultBeanDefinitionDocumentReader.parseDefaultElement</h4><p>parseDefaultElement 根据不同的标签元素，调用不同的解析注册方法</p>
-<pre><code class="java">    private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
-        if (delegate.nodeNameEquals(ele, &quot;import&quot;)) {
-            this.importBeanDefinitionResource(ele);
-        } else if (delegate.nodeNameEquals(ele, &quot;alias&quot;)) {
-            this.processAliasRegistration(ele);
-        } else if (delegate.nodeNameEquals(ele, &quot;bean&quot;)) {
-            this.processBeanDefinition(ele, delegate);
-        } else if (delegate.nodeNameEquals(ele, &quot;beans&quot;)) {
-            this.doRegisterBeanDefinitions(ele);
-        }
-
-    }</code></pre>
-<p>一步步跟进，除了 processAliasRegistration 其余方法最终都是 bean 的注册： DefaultListableBeanFactory.registerBeanDefinition</p>
-<h4 id="DefaultListableBeanFactory-registerBeanDefinition"><a href="#DefaultListableBeanFactory-registerBeanDefinition" class="headerlink" title="DefaultListableBeanFactory.registerBeanDefinition"></a>DefaultListableBeanFactory.registerBeanDefinition</h4><pre><code class="java">    public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) throws BeanDefinitionStoreException {
-        Assert.hasText(beanName, &quot;Bean name must not be empty&quot;);
-        Assert.notNull(beanDefinition, &quot;BeanDefinition must not be null&quot;);
-        if (beanDefinition instanceof AbstractBeanDefinition) {
-            try {
-                ((AbstractBeanDefinition)beanDefinition).validate();
-            } catch (BeanDefinitionValidationException var7) {
-                throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName, &quot;Validation of bean definition failed&quot;, var7);
-            }
-        }
-
-        synchronized(this.beanDefinitionMap) {
-            Object oldBeanDefinition = this.beanDefinitionMap.get(beanName);
-            if (oldBeanDefinition != null) {
-                if (!this.allowBeanDefinitionOverriding) {
-                    throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName, &quot;Cannot register bean definition [&quot; + beanDefinition + &quot;] for bean &#39;&quot; + beanName + &quot;&#39;: There is already [&quot; + oldBeanDefinition + &quot;] bound.&quot;);
-                }
-
-                if (this.logger.isInfoEnabled()) {
-                    this.logger.info(&quot;Overriding bean definition for bean &#39;&quot; + beanName + &quot;&#39;: replacing [&quot; + oldBeanDefinition + &quot;] with [&quot; + beanDefinition + &quot;]&quot;);
-                }
-            } else {
-                //添加到 list
-                this.beanDefinitionNames.add(beanName);
-                this.frozenBeanDefinitionNames = null;
-            }
-            //把 BeanDefinition 放到 map 中，到此注册就完成了。
-            //在后面实例化的时候，就是把 beanDefinitionMap 中的 BeanDefinition 取出来，逐一实例化
-            this.beanDefinitionMap.put(beanName, beanDefinition);
-        }
-
-        this.resetBeanDefinition(beanName);
-    }</code></pre>
+        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>项目中报表需求查询各种时间段的数据，数据没有则为 0 。所以相到了先查出需要的日期再 left join 。</p>
+<h4 id="最近-N-天"><a href="#最近-N-天" class="headerlink" title="最近 N 天"></a>最近 N 天</h4><pre><code class="sql">select to_char((sysdate - 7) + ROWNUM, &#39;yyyy-MM-dd&#39;) as dates
+from dual
+connect by ROWNUM &lt;= 7;</code></pre>
+<p><img src="/images/oracle/demo1.jpg" alt="结果"></p>
+<h4 id="月初至当天"><a href="#月初至当天" class="headerlink" title="月初至当天"></a>月初至当天</h4><pre><code class="sql">select to_char(trunc(sysdate, &#39;mm&#39;) + ROWNUM - 1, &#39;yyyy-MM-dd&#39;) as dates
+from dual
+connect by ROWNUM &lt;= trunc(sysdate - trunc(sysdate, &#39;mm&#39;)) + 1;</code></pre>
+<p><img src="/images/oracle/demo2.png" alt="结果"></p>
+<h4 id="年初以来的每月末"><a href="#年初以来的每月末" class="headerlink" title="年初以来的每月末"></a>年初以来的每月末</h4><pre><code class="sql">select to_char(add_months(last_day(trunc(sysdate, &#39;yyyy&#39;)), ROWNUM - 1), &#39;yyyy-MM-dd&#39;) as dates
+from dual
+connect by ROWNUM &lt; ceil(months_between(sysdate, trunc(sysdate, &#39;yyyy&#39;)) + 1) - 1;</code></pre>
+<p>解释</p>
+<ul>
+<li><p>trunc(sysdate, ‘yyyy’) 当前年的第一天</p>
+</li>
+<li><p>months_between 算出距离当前时间的月数</p>
+</li>
+<li><p>last_day(trunc(sysdate, ‘yyyy’)) 第一个月末</p>
+</li>
+</ul>
+<p><img src="/images/oracle/demo3.png" alt="结果"></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 rockeycui@163.com </span>
@@ -806,11 +685,11 @@
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>Spring ContextLoaderListener 启动流程解析二</p>
-    <p><span class="copy-title">文章字数:</span><span class="post-count">773</span></p>
+    <p><span class="copy-title">文章标题:</span>oracle 获得各种时间段</p>
+    <p><span class="copy-title">文章字数:</span><span class="post-count">175</span></p>
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="崔石磊(RockeyCui)">崔石磊(RockeyCui)</a></p>
-    <p><span class="copy-title">发布时间:</span>2018-09-30, 19:00:00</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/Spring ContextLoaderListener 启动流程解析二.html" title="Spring ContextLoaderListener 启动流程解析二">https://cuishilei.com/Spring ContextLoaderListener 启动流程解析二.html</a>
+    <p><span class="copy-title">发布时间:</span>2020-08-05, 18:36:08</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/oracle_demo1.html" title="oracle 获得各种时间段">https://cuishilei.com/oracle_demo1.html</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>
