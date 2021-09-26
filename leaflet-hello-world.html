@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>Java validate 注解验证工具类及自定义验证注解 | RockeyCui的博客</title>
-  <meta name="keywords" content=" JAVA ">
-  <meta name="description" content="Java validate 注解验证工具类及自定义验证注解 | RockeyCui的博客">
+  <title>leaflet hello world | RockeyCui的博客</title>
+  <meta name="keywords" content=" leaflet ">
+  <meta name="description" content="leaflet hello world | RockeyCui的博客">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="keywords" content="rockeycui cuishilei 崔石磊">
 <meta property="og:type" content="website">
@@ -601,9 +601,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-Java-validate-注解验证" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-leaflet-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Java validate 注解验证工具类及自定义验证注解</h1>
+        <h1 class="article-title">leaflet hello world</h1>
     
     <div class="article-meta">
         
@@ -611,26 +611,26 @@
         
         <span class="book">
             
-                <a href="javascript:" data-rel="JAVA">JAVA</a>
+                <a href="javascript:" data-rel="leaflet">leaflet</a>
             
         </span>
         
         
         <span class="tag">
             
-            <a href="javascript:" class="color5">JAVA</a>
+            <a href="javascript:" class="color3">leaflet</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-09-25 11:05:14'>2018-08-07 21:32</time>
+        创建时间:<time class="date" title='更新时间: 2021-09-26 17:19:44'>2021-09-20 19:00</time>
         
     </div>
     <div class="article-meta">
         
-        <span>字数:884</span>
+        <span>字数:15</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -660,7 +660,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-基本注解"><span class="toc-text">1.基本注解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-验证方法类"><span class="toc-text">2.验证方法类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#NotBlank-类内容如下，提供了验证方法"><span class="toc-text">NotBlank 类内容如下，提供了验证方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-验证"><span class="toc-text">3.验证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#得到字段get方法，以便取值"><span class="toc-text">得到字段get方法，以便取值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#得到注解，得到验证类实例"><span class="toc-text">得到注解，得到验证类实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#验证，并返回结果，最终的代码如下"><span class="toc-text">验证，并返回结果，最终的代码如下</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-注解用法"><span class="toc-text">4.注解用法</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二分查找JAVA实现"><span class="toc-text">二分查找JAVA实现</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -675,147 +675,13 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1-基本注解"><a href="#1-基本注解" class="headerlink" title="1.基本注解"></a>1.基本注解</h2><p>JAVA注解参考 <a href="https://blog.csdn.net/briblue/article/details/73824058" target="_blank" rel="noopener">https://blog.csdn.net/briblue/article/details/73824058</a></p>
-<p>看到这里你可能会想到注解只有成员变量，没有方法。那么我们应该怎样通过只有成员变量的注解来达到类似java validate注解的功能呢。我们的注解只是用于验证字段，所以注解的属性应该是</p>
-<ul>
-<li><strong>只作用于成员变量</strong></li>
-<li><strong>是要在运行中使用的</strong></li>
-</ul>
-<pre><code class="java">@Target({ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface NotBlankA {
-    String message() default &quot;字段为空&quot;;
-    //NotBlank.class bean内有相关的验证方法
-    //继承 Ival，抽象编程，减少代码量
-    Class&lt;? extends IVal&gt; valClass() default NotBlank.class;
-}</code></pre>
-<h2 id="2-验证方法类"><a href="#2-验证方法类" class="headerlink" title="2.验证方法类"></a>2.验证方法类</h2><p>注解中不能写方法，但是可以有class类型，来以此达到注解和验证类绑定的目的。（<strong>valClass返回验证类的class类型，我们就可以实例出验证类</strong>）</p>
-<pre><code class="java">//注解成员
-Class&lt;? extends IVal&gt; valClass() default NotBlank.class;</code></pre>
-<p>其中 Ival 为接口，通过抽象编程、向上转型，这样我们写验证的时候可以减少很大的代码量。</p>
-<pre><code class="java">public interface IVal {
-    //初始化注解
-    public boolean init(Annotation a);
-    //验证方法
-    public String isValid(String v);
-}</code></pre>
-<h3 id="NotBlank-类内容如下，提供了验证方法"><a href="#NotBlank-类内容如下，提供了验证方法" class="headerlink" title="NotBlank 类内容如下，提供了验证方法"></a>NotBlank 类内容如下，提供了验证方法</h3><pre><code class="java">public class NotBlank implements IVal {
-
-    private NotBlankA a;
-
-    @Override
-    public boolean init(Annotation a) {
-       this.a = (NotBlankA) a;
-        return true;
-    }
-
-    @Override
-    public String isValid(String v) {
-        if (v == null || &quot;&quot;.equals(v)) {
-            return a.message();
-        } else {
-            return &quot;&quot;;
-        }
-    }
-}</code></pre>
-<h2 id="3-验证"><a href="#3-验证" class="headerlink" title="3.验证"></a>3.验证</h2><p>到这里，我们就需要写类验证相关的类了。接下来验证Util做的就是<strong>找到待验证bean内字段上的注解</strong>，判断注解是否为注解类，初始化并验证了。</p>
-<h3 id="得到字段get方法，以便取值"><a href="#得到字段get方法，以便取值" class="headerlink" title="得到字段get方法，以便取值"></a>得到字段get方法，以便取值</h3><pre><code class="java">//循环字段
-for (Field field : bean.getClass().getDeclaredFields()) {
-    Method getMethod;
-    try {
-        PropertyDescriptor pd = new PropertyDescriptor(field.getName(), bean.getClass());
-        getMethod = pd.getReadMethod();
-    } catch (Exception e) {
-        log.info(&quot;处理失败:&quot; + field.getName() + &quot;@&quot; + bean.getClass().getName(), e);
-        continue;
-    }
-}</code></pre>
-<h3 id="得到注解，得到验证类实例"><a href="#得到注解，得到验证类实例" class="headerlink" title="得到注解，得到验证类实例"></a>得到注解，得到验证类实例</h3><pre><code class="java">for (Field field : bean.getClass().getDeclaredFields()) {
-    for (Annotation anno : field.getAnnotations()) {
-        //此处的 anno 即为注解，然后做判断，
-        Method clazzMethod;
-        try {
-            //valClass 有此方法即为验证注解，因为是咱们自己写的嘛
-            clazzMethod = anno.getClass().getDeclaredMethod(&quot;valClass&quot;);
-            if (clazzMethod != null) {
-                //得到注解绑定的 class
-                Class valClazz = (Class) clazzMethod.invoke(anno);
-                //得到实例，此处 向上转型统一调用接口方法，不关心实现
-                IVal val= (IVal) valClazz.newInstance();
-            }
-        } catch (Exception e) {
-            log.info(&quot;绑定消息处理协议时失败:&quot;, e);
-        }
-    }
-}</code></pre>
-<h3 id="验证，并返回结果，最终的代码如下"><a href="#验证，并返回结果，最终的代码如下" class="headerlink" title="验证，并返回结果，最终的代码如下"></a>验证，并返回结果，最终的代码如下</h3><pre><code class="java">@Slf4j
-public class ValFactoryUtil {
-    /**
-     * @param bean 请求对象
-     * @return
-     */
-    public static String validate(Object bean) {
-        //遍历一个类的成员变量
-        for (Field field : bean.getClass().getDeclaredFields()) {
-            Method getMethod;
-            try {
-                PropertyDescriptor pd = new PropertyDescriptor(field.getName(), bean.getClass());
-                getMethod = pd.getReadMethod();
-            } catch (Exception e) {
-                log.info(&quot;绑定消息处理协议时失败:&quot; + field.getName() + &quot;@&quot; + bean.getClass().getName(), e);
-                continue;
-            }
-            if (getMethod != null) {
-                for (Annotation anno : field.getAnnotations()) {
-                    try {
-                        //得到注解绑定的验证类实例
-                        IVal validator = genValidator(anno);
-                        if (validator != null) {
-                            //初始化，主要是为了得到注解中的提示信息 message,反馈给方法
-                            validator.init(anno);
-                            String result = validator.isValid((String) getMethod.invoke(bean));
-                            if (StringUtils.isNotBlank(result)) {
-                                return result;
-                            }
-                        }
-                    } catch (Exception e) {
-                        log.info(&quot;处理时失败:&quot; + field.getName() + &quot;@&quot; + bean.getClass().getName(), e);
-                    }
-                }
-            }
-        }
-        //这个是递归去找父类的字段并验证
-        if (!bean.getClass().getSuperclass().equals(Object.class)) {
-            validate(bean.getClass().getSuperclass());
-        }
-        return &quot;&quot;;
-    }
-    private static IVal genValidator(Annotation anno) {
-        Method clazzMethod;
-        try {
-            clazzMethod = anno.getClass().getDeclaredMethod(&quot;valClass&quot;);
-            if (clazzMethod != null) {
-                Class valClazz = (Class) clazzMethod.invoke(anno);
-                IVal val = (IVal) valClazz.newInstance();
-            }
-        } catch (Exception e) {
-            log.info(&quot;绑定消息处理协议时失败:&quot;, e);
-        }
-        return null;
-    }
-}</code></pre>
-<h2 id="4-注解用法"><a href="#4-注解用法" class="headerlink" title="4.注解用法"></a>4.注解用法</h2><pre><code class="java">@Data
-public class TestBean {
-    @NotBlankA(message = &quot;name 为空&quot;)
-    private String name;
-}
-
-public static void main(String[] args) {
-    TestBean bean = new TestBean();
-    String res = ValFactoryUtil.validate(bean);
-    System.out.println(res);
-}</code></pre>
-
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>记录 leaflet 开发</p>
+<blockquote>
+<p>leaflet</p>
+<blockquote>
+</blockquote>
+</blockquote>
+<h3 id="二分查找JAVA实现"><a href="#二分查找JAVA实现" class="headerlink" title="二分查找JAVA实现"></a>二分查找JAVA实现</h3>
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 rockeycui@163.com </span>
     </div>
@@ -828,11 +694,11 @@ public static void main(String[] args) {
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>Java validate 注解验证工具类及自定义验证注解</p>
-    <p><span class="copy-title">文章字数:</span><span class="post-count">884</span></p>
+    <p><span class="copy-title">文章标题:</span>leaflet hello world</p>
+    <p><span class="copy-title">文章字数:</span><span class="post-count">15</span></p>
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="崔石磊(RockeyCui)">崔石磊(RockeyCui)</a></p>
-    <p><span class="copy-title">发布时间:</span>2018-08-07, 21:32:16</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/Java-validate-注解验证.html" title="Java validate 注解验证工具类及自定义验证注解">https://cuishilei.com/Java-validate-注解验证.html</a>
+    <p><span class="copy-title">发布时间:</span>2021-09-20, 19:00:00</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/leaflet-hello-world.html" title="leaflet hello world">https://cuishilei.com/leaflet-hello-world.html</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>

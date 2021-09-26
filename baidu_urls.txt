@@ -1,4 +1,6 @@
+https://cuishilei.com/leaflet-hello-world.html
 https://cuishilei.com/oracle_demo1.html
+https://cuishilei.com/java8-stream-demo3.html
 https://cuishilei.com/java8-stream-demo2.html
 https://cuishilei.com/java8-stream-demo1.html
 https://cuishilei.com/jpa-query-union.html
@@ -26,5 +28,3 @@ https://cuishilei.com/算法系列-排序算法-插入排序-JAVA.html
 https://cuishilei.com/算法系列-排序算法-冒泡排序-JAVA.html
 https://cuishilei.com/算法系列-排序算法-选择排序-JAVA.html
 https://cuishilei.com/算法系列-二分查找-JAVA.html
-https://cuishilei.com/自己经常用到的命令.html
-https://cuishilei.com/踩坑笔记.html
