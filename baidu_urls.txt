@@ -1,7 +1,7 @@
 https://cuishilei.com/leaflet-hello-world.html
 https://cuishilei.com/oracle_demo1.html
-https://cuishilei.com/java8-stream-demo3.html
 https://cuishilei.com/java8-stream-demo2.html
+https://cuishilei.com/java8-stream-demo3.html
 https://cuishilei.com/java8-stream-demo1.html
 https://cuishilei.com/jpa-query-union.html
 https://cuishilei.com/redis-set.html
